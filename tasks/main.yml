@@ -1,0 +1,20 @@
+---
+- name: Install haproxy
+  apt:
+    pkg: haproxy
+    state: present
+
+- name: Enable haproxy
+  command: sed -i -e 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
+
+- name: Write haproxy config file
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    backup: no
+
+- name: Ensure haproxy service is started
+  service: name=haproxy state=started enabled=yes
+
+- name: Reload haproxy configuration
+  service: name=haproxy state=reloaded
